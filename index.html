@@ -2,16 +2,16 @@
 	<head>
 	</head>
 	<body>
-		CS184/284A Project Webpages
-		<br>
+		<h3>CS184/284A Project Webpages</h3>
+		<br><br>
 		<a href="/proj1.html">Project 1</a>
-		<br>
+		<br><br>
 		<a href="/proj2.html">Project 2</a>
-		<br>
+		<br><br>
 		<a href="/proj3-1.html">Project 3-1</a>
-		<br>
+		<br><br>
 		<a href="/proj3-2.html">Project 3-2</a>
-		<br>
+		<br><br>
 		<a href="/proj4.html">Project 4</a>
 	</body>
 	<script>
@@ -20,6 +20,8 @@
 		var repo_name = window.location.href.substring(a+3)
 		for(var i = 0; i < links.length; i++){
 			var link = links[i]
+			console.log(link.href)
+			console.log(repo_name)
 			link.href = repo_name + link.href
 			console.log(link.href)
 		}
