@@ -1,6 +1,27 @@
 <html>
-
-<body>
-	<a href="/proj1.html">Click here!</a>
-</body>
+	<head>
+	</head>
+	<body>
+		CS184/284A Project Webpages
+		<br>
+		<a href="/proj1.html">Project 1</a>
+		<br>
+		<a href="/proj2.html">Project 2</a>
+		<br>
+		<a href="/proj3-1.html">Project 3-1</a>
+		<br>
+		<a href="/proj3-2.html">Project 3-2</a>
+		<br>
+		<a href="/proj4.html">Project 4</a>
+	</body>
+	<script>
+		var links = document.body.getElementsByTagName("a")
+		var a = window.location.href.indexOf(".io")
+		var repo_name = window.location.href.substring(a+3)
+		for(var i = 0; i < links.length; i++){
+			var link = links[i]
+			link.href = repo_name + link.href
+			console.log(link.href)
+		}
+	</script>
 </html>
