@@ -13,7 +13,7 @@
 		representation of what different sampling and interpolation techniques
 		look like. Rasterization takes an input image and converts it into output that appears as pixels on a display. This allows an easy compare and contrast of different methods.
 		</p>
-		<p>I found the idea behind the anti-alising technique supersamping to be very 	interesting as it allows us to take multiple samples within one pixel and take the average of those values to output an intermediate color value which helps to blur sharp lines and angles.
+		<p>I found the idea behind the anti-alising technique Supersampling to be very 	interesting as it allows us to take multiple samples within one pixel and take the average of those values to output an intermediate color value which helps to blur sharp lines and angles.
 		</p>
 
 		<h2>Part 1: Drawing Single-Color Triangles</h2>
@@ -39,8 +39,47 @@
 		<p>To make sure that this algoithm is no worse than one that checks each sample within the bounding box of the triangle, I computed the min/max x and y values of the 3 points. This allows us to narrow down the points we need to check to a rectangle around the triangle.</p>
 
 		<h2>Part 2: Antialiasing by Supersampling</h2>
-		<p>Supersamping is an antialiasing technique that involves taking multiple measurements within one pixel and setting the value of the pixel to the average of the subpixel samples. This blurs the sharp lines and edges you would see in rasterization otherwise. In other words, it decreases the appearance of jaggies.</p>
-		<p>Insert approach here</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="part2-1.png" alt="Sample Rate 1" style="width:100%">
+				<p>Sample Rate 1</p>
+		  </div>
+		  <div class="column">
+		    <img src="part2-2.png" alt="Sample Rate 4" style="width:100%">
+				<p>Sample Rate 4</p>
+		  </div>
+		  <div class="column">
+		    <img src="part2-3.png" alt="Sample Rate 9" style="width:100%">
+				<p>Sample Rate 9</p>
+		  </div>
+			<div class="column">
+		    <img src="part2-4.png" alt="Sample Rate 16" style="width:100%">
+				<p>Sample Rate 16</p>
+		  </div>
+		</div>
+		<p>Supersampling is an antialiasing technique that involves taking multiple measurements within one pixel and setting the value of the pixel to the average of the subpixel samples. This blurs the sharp lines and edges you would see in rasterization otherwise. In other words, it decreases the appearance of jaggies.</p>
+		<p>I implemented this by changing the previous rasterization method to sample multiple times with the provided sample rate. For each pixel, the center of each of the subsections of the pixel are tested to determine if the section is within the triangle. If it is found that the point is within the triangle then sample_buffer is colored. Afterwards the average of the colors are calculated, which creates the burred line effect you see in the images above. To do that the resolve_to_framebuffer function was modified to calculate the averages of the colors.</p>
+		<h3>Extra Credit: Jittered Sampling</h3>
+		<div class="row">
+		  <div class="column">
+		    <img src="jittered1.png" alt="Sample Rate 1" style="width:100%">
+				<p1>Sample Rate 1</p1>
+		  </div>
+		  <div class="column">
+		    <img src="jittered2.png" alt="Sample Rate 4" style="width:100%">
+				<p1>Sample Rate 4</p1>
+		  </div>
+		  <div class="column">
+		    <img src="jittered3.png" alt="Sample Rate 9" style="width:100%">
+				<p1>Sample Rate 9</p1>
+		  </div>
+			<div class="column">
+		    <img src="jittered4.png" alt="Sample Rate 16" style="width:100%">
+				<p1>Sample Rate 16</p1>
+		  </div>
+		</div>
+		<p>Jittered sampling is different from supersampling as it partitions the pixel into different regions then chooses one randomly from each. Compared to supersampling, the results are more random and unpredictable, however it smooths out with more samples.</p>
+
 		<h2>Part 3: Transforms</h2>
 
 		<h2>Part 4: Barycentric Coordinates</h2>
