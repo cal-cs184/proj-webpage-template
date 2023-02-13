@@ -9,7 +9,11 @@ body *{
 
 h1 {
   text-align: center;
-  padding-top: 5%;
+  padding-top: 10%;
+}
+
+h2 {
+  padding-top: 2%;
 }
 
 .column {
