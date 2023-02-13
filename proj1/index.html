@@ -1,7 +1,51 @@
 <html>
 	<head>
+		<link rel="stylesheet" href="style.css">
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
+
 	</head>
 	<body>
-		Project 1 here
+		<h1>Project 1: Rasterizer</h1>
+		<h3 style="text-align: center">By Alana Li</h3>
+
+		<h2>Overview</h2>
+		<p>For this project we implemented rasterization in C++ that shows a visual
+		representation of what different sampling and interpolation techniques
+		look like. Rasterization takes an input image and converts it into output that appears as pixels on a display. This allows an easy compare and contrast of different methods.
+		</p>
+		<p>I found the idea behind the anti-alising technique supersamping to be very 	interesting as it allows us to take multiple samples within one pixel and take the average of those values to output an intermediate color value which helps to blur sharp lines and angles.
+		</p>
+
+		<h2>Part 1: Drawing Single-Color Triangles</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="test3.png" alt="Test 3" style="width:100%">
+				<p>Test 3</p>
+		  </div>
+		  <div class="column">
+		    <img src="test4.png" alt="Test 4" style="width:100%">
+				<p>Test 4</p>
+		  </div>
+		  <div class="column">
+		    <img src="test5.png" alt="Test 5" style="width:100%">
+				<p>Test 5</p>
+		  </div>
+			<div class="column">
+		    <img src="test6.png" alt="Test 6" style="width:100%">
+				<p>Test 6</p>
+		  </div>
+		</div>
+		<p>For this portion we iterate through all the points on the canvas and call a helper function point_triangle which takes the current x and y coordinates as well as those of the 3 vertices of the triangle and computes the dot product of the current point with the first vertex and second vertex, second and third, and third and first vertex. If the values of all three of these dot products have the same sign, it means that the point is within the triangle.</p>
+		<p>To make sure that this algoithm is no worse than one that checks each sample within the bounding box of the triangle, I computed the min/max x and y values of the 3 points. This allows us to narrow down the points we need to check to a rectangle around the triangle.</p>
+
+		<h2>Part 2: Antialiasing by Supersampling</h2>
+
+		<h2>Part 3: Transforms</h2>
+
+		<h2>Part 4: Barycentric Coordinates</h2>
+
+		<h2>Part 5: Texture Mapping with Pixel Sampling</h2>
+		
+		<h2>Part 6: Texture Mapping with Mipmaps</h2>
 	</body>
 </html>
