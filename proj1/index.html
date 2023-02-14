@@ -107,16 +107,18 @@
 		<p>I added another option to the GUI, by pressing b the border around the image will be removed, allowing for cleaner screenshots. I did this by modifying the redraw function.</p>
 
 		<h2>Part 4: Barycentric Coordinates</h2>
-		<p style="text-align: center">
-			<img src="Images/pasteltri.png" alt="With Border" style="width:50%; padding: 0%">
-			<p style="text-align: center; font-size: 80%">Barycentric Interpolation on Pastel Values</p>
-		</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/pasteltri.png" alt="Pastel Triangle" style="width:100%; padding: 0%">
+				<p1>Barycentric Interpolation on Pastel Values</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/barycoords.png" alt="Test 7" style="width:100%; padding: 0%">
+				<p1>Test 7</p1>
+		  </div>
+		</div>
 		<p>The Barycentric coordinate system can be used to find the position of any point in a triangle by calculating its distance from each vertex. This can also be applied to determining the color of any point within the triange given the color of the three vertices by performing a weighed average based on its distances.</p>
 		<p>This was implemented by first transforming the given x and y values of the point into Barycentric coordinates. These values are then taken and weighted by distance with the colors of the vertices and finally added together to get the final color of the pixel.</p>
-		<p style="text-align: center">
-			<img src="Images/barycoords.png" alt="With Border" style="width:50%; padding: 0%">
-			<p style="text-align: center; font-size: 80%">Test 7</p>
-		</p>
 
 		<h2>Part 5: Texture Mapping with Pixel Sampling</h2>
 
