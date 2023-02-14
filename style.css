@@ -16,21 +16,13 @@ h2 {
   padding-top: 2%;
 }
 
-p1 {
-  padding: 0;
-}
-
 .column {
-  padding: 0%;
-  text-align: center;
   font-size: 80%;
-  vertical-align:middle;
-  display: table-cell;
+  align-items: center;
+  justify-content: center;
 }
 
 .row {
-  padding: 0%;
-  clear: both;
-  display: table;
-  vertical-align:middle;
+  text-align:center;
+  justify-content: center;
 }
