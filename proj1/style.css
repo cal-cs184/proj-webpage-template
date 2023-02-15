@@ -27,8 +27,6 @@ h3 {
 }
 
 .row {
-  padding-left: 10%;
-  padding-right: 10%;
   clear: both;
   display: table;
   justify-content: center;
