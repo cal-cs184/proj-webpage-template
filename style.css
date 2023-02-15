@@ -1,32 +1,10 @@
-html,
-
-body {
+body *{
   font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;
-  padding-left: 25%;
-  padding-right: 25%;
-
+  padding-left: 15%;
+  padding-right: 15%;
 }
 
 h1 {
   text-align: center;
   padding-top: 10%;
-}
-
-h2 {
-  padding-top: 2%;
-}
-
-.column {
-  font-size: 80%;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
-}
-
-.row {
-  align-items: center;
-  text-align:center;
-  justify-content: center;
-  display: flex;
 }
