@@ -25,14 +25,27 @@
 
 <h1 align="middle">CS 184: Computer Graphics and Imaging, Spring 2018</h1>
 <h1 align="middle">Project 1: Rasterizer</h1>
-<h2 align="middle">CS184-May Liu, Atharva Patil</h2>
+<h2 align="middle">Atharva Patil and May Liu, p1-rasterizer-sp23-184ineedcoffee</h2>
 
 <br><br>
 
 <div>
 
 <h2 align="middle">Overview</h2>
-<p>Give a high-level overview of what you implemented in this project. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the project.</p>
+<p>
+    In this project, we created a vector graphics renderer that can take
+    in a simplified version of SVG (Scalable Vector Graphics) files. We implemented
+    features such as drawing triangles, supersampling, hierarchical transforms,
+    and texture mapping with antialiasing, that contributed to the quality of the images
+    rendered as well as the efficiency of our algorithms. The most interesting part
+    of this project was realizing how endless the scope of optimizing computer graphics is -
+    from mathematical algorithm improvements to cache/hardware level optimizations.
+    The extra credit component of task 1, exploring different ways of optimizing
+    triangle rasterization, was truly eye-opening in this regard. Also, initially
+    initially it was difficult to understand how concepts like barycentric coordinates
+    would have real-life applications in computer graphics, but implementing texture mapping
+    first-hand made it a lot clearer.
+</p>
 
 <h2 align="middle">Section I: Rasterization</h2>
 
@@ -84,8 +97,24 @@
 
 <h4>Special Optimizations</h4>
 <p>
-    for loop go fast 🏃
+    Instead of traversing every single pixel in the bounding box with two for-loops,
+    while iterating over rows of pixels horizontally, we used line equations to
+    find the pixels at the exact boundaries of the triangles. This means that we
+    only iterate over pixels mathematically proven to lie inside the bounds
+    of the triangle. We implemented this approach by splitting the triangle into two
+    halfs such that both halves would have an edge parallel to the x-axis, then
+    using line equations to find the triangle boundary at each row of pixels.
 </p>
+
+<img src="images/task1-opt.png" style="height: 300px">
+<p style="color: grey; font-size: 10px">
+    Image source: https://stackoverflow.com/questions/52520102/software-rasterization-implementation-speed-up-ideas
+</p>
+
+<p>
+    Before the speedup, triangle rasterization would take an average of 11275 
+    CPU clock ticks, while the optimized version averaged at 4733 ticks, indicating a 
+    <b>58% speedup</b>.
 
 <h3 align="middle">Part 2: Antialiasing triangles</h3>
 
@@ -150,25 +179,29 @@
 </p>
 
 <h4>Alternate Antialising Methods</h4>
-<p>In addition, we also attempted to super sample using random sampling within a single pixle.
+<p>In addition, we also implemented a third supersampling method using random sampling within a single pixel.
     We have created a seperate function "rasterize_triangle_random_supersampling" and tested it out by calling it in place of the regular restarized_triangle.
-    However, despite the reduction of jaggies, for some reason the color was a bit off.
-    Here is a side by side comparison of a rendered image with sapling rate set to 16: </p>
+    Clearly, we can see that there is an obvious reduction in jaggies.
+</p>
+<p>
+    Here is a side by side comparison of a rendered image with sapling rate set to 16:
+</p>
+
+<div align="middle">
     <table style="width=100%">
         <tr>
             <td>
-                <img src="images/random.png" align="middle" width="400px"/>
+                <img src="images/random_16.png" align="middle" width="400px"/>
                 <figcaption align="middle">Random super-sampling with rate 16</figcaption>
             </td>
             <td>
-                <img src="images/regular.png" align="middle" width="400px"/>
+                <img src="images/regular_16.png" align="middle" width="400px"/>
                 <figcaption align="middle">Regular super-sampling with rate 14</figcaption>
             </td>
         </tr>
         <br>
     </table>
-    <p>Clearly, we can see that there is an obvious reduction in jaggies, but the color was much lighter.</p>
-
+</div>
 
 <h3 align="middle">Part 3: Transforms</h3>
   <p>Here is an updated version of the robot, which is waving its left hand and tilting its right foot.
@@ -302,7 +335,10 @@
     </table>
   </div>
 
-
+  <h2 align="middle">Link to writeup</h2>
+  <a href='https://cal-cs184-student.github.io/project-webpages-sp23-patilatharva/proj1/index.html' align='middle'>
+  https://cal-cs184-student.github.io/project-webpages-sp23-patilatharva/proj1/index.html
+  </a>
 
 <h2 align="middle">Section III: Art Competition</h2>
 <p>If you are not participating in the optional art competition, don't worry about this section!</p>
