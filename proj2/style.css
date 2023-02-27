@@ -1,0 +1,34 @@
+body *{
+  font-family: Trebuchet MS,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Tahoma,sans-serif;
+  padding-left: 15%;
+  padding-right: 15%;
+}
+
+h1 {
+  text-align: center;
+  padding-top: 10%;
+}
+
+h2 {
+  padding-top: 2%;
+}
+
+h3 {
+  text-align: center;
+}
+
+.column {
+  padding: 0%;
+  text-align: center;
+  font-size: 80%;
+  vertical-align:middle;
+  justify-content: center;
+  display: table-cell;
+}
+
+.row {
+  clear: both;
+  display: table;
+  justify-content: center;
+  vertical-align:middle;
+}

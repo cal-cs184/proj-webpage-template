@@ -1,7 +1,170 @@
 <html>
 	<head>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		Project 2 here
+		<h1>Project 2: MeshEdit</h1>
+		<h3>By Alana Li</h3>
+
+		<h2>Overview</h2>
+		<p>TODO
+		</p>
+		<p>TODO
+		</p>
+
+		<h2>Part 1: Bezier Curves with 1D de Casteljau Subdivision</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp0.png" style="width:100%; padding: 0%">
+				<p>Step 0</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp1.png" style="width:100%; padding: 0%">
+				<p>Step 1</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp2.png" style="width:100%; padding: 0%">
+				<p>Step 2</p>
+		  </div>
+		</div>
+		<br>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp3.png" style="width:100%; padding: 0%">
+				<p>Step 3</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp4.png" style="width:100%; padding: 0%">
+				<p>Step 4</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp5.png" style="width:100%; padding: 0%">
+				<p>Step 5</p>
+		  </div>
+		</div>
+		<br>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp6.png" style="width:100%; padding: 0%">
+				<p>Step 6</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp7.png" style="width:100%; padding: 0%">
+				<p>Final Curve</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp8.png" style="width:100%; padding: 0%">
+				<p>Modified t</p>
+		  </div>
+		</div>
+		<p>Given a Bezier curve with n control points, we can apply de Casteljau's algoritm to repeatedly compute linear interpolations between the points to end up with a smooth curve. We do this by adding lines between neighboring pairs of lines between control points at position t. We then repeat the process with the calculated new lines until we end up with just one point, which becomes a point on the Bezier curve.</p>
+		<p>To do this, I used a for loop to call lerp on every pair of adjacent control points. Each new calculated point is added to the vector array and the process continues until there is only one point left.</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp9.png" style="width:100%; padding: 0%">
+				<p>Different Control Points</p>
+		  </div>
+		</div>
+
+		<h2>Part 2: Bezier Surfaces with Serarable 1D de Casteljau</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/teapot.png" style="width:100%; padding: 0%">
+				<p>Mesh Teapot</p>
+		  </div>
+		</div>
+		<p>Bezier surfaces can be represented as a series of Bezier curves lined up. We can use de Casteljau's algorithm to calculate the control point of each curve in one dimension with our u variable, before linearly interpolating in the other direction with the input v.</p>
+		<p>This is done by evaluating the control points one row at a time in the u dimension. This determines the Bezier curves. We then evaluate the u points at t in the v direction, creating the final Bezier surface.</p>
+
+		<h2>Part 3: Area-Weighted Vertex Normals</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/notsmooth.png" style="width:100%; padding: 0%">
+				<p1>Flat Shading</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/smooth.png" style="width:100%; padding: 0%">
+				<p1>Phong Shading</p1>
+		  </div>
+		</div>
+		<p>I used a HalfedgeCIter object to keep track of the starting halfedge, looping until we eventually come back to the start. Halfedge objects have a pointer to a trianglar face with 3 vertices. By following the halfedge's next() and position pointers we can get the positions of all 3 vertices of the face. I then took the cross product of the difference between adjacent vectors and added that to the sum. I then move on to the next surface by accessing the halfedge's twin() then next() pointer. When the loop is finished, the normalized vector of the sum is returned.</p>
+
+		<h2>Part 4: Edge Flip</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/pasteltri.png" alt="Pastel Triangle" style="width:100%; padding: 0%">
+				<p1>Pastel Triangle</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/test7.png" alt="Test 7" style="width:100%; padding: 0%">
+				<p1>Test 7</p1>
+		  </div>
+		</div>
+		<p>The Barycentric coordinate system can be used to find the position of any point in a triangle by calculating its distance from each vertex. This can also be applied to determining the color of any point within the triange given the color of the three vertices by performing a weighed average based on its distances.</p>
+		<p>This was implemented by first transforming the given x and y values of the point into Barycentric coordinates. These values are then taken and weighted by distance with the colors of the vertices and finally added together to get the final color of the pixel.</p>
+
+		<h2>Part 5: Texture Mapping with Pixel Sampling</h2>
+		<div class="row">
+			<div class="column">
+				<img src="Images/texture1-1.png" alt="Nearest Pixel 1" style="width:100%; padding: 0%">
+				<p1>Nearest Pixel 1</p1>
+			</div>
+			<div class="column">
+				<img src="Images/texture1-2.png" alt="Bilinear 1" style="width:100%; padding: 0%">
+				<p1>Bilinear 1</p1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="column">
+				<img src="Images/texture1-3.png" alt="Nearest Pixel 16" style="width:100%; padding: 0%">
+				<p1>Nearest Pixel 16</p1>
+			</div>
+			<div class="column">
+				<img src="Images/texture1-4.png" alt="Bilinear 16" style="width:100%; padding: 0%">
+				<p1>Bilinear 16</p1>
+			</div>
+		</div>
+		<p>Pixel sampling allows us to add a texture to an image. To do this, we need to first transition from the point's x and y coordinates to the texture's coordinates, u and v. After sampling, we then apply the corresponding color value to the pixel.</p>
+		<p>Two types of pixel sampling were implemented, the first one being nearest pixel sampling. This method choses the closest point to the pixel in the texture and applies it to the image. The other type is bilinear sampling which involves taking the closest four points in the texture and calculating a weighted sum of the color values before assigning it to the pixel color.</p>
+		<p>As you can see above, bilinear sampling produces better results as compared to nearest pixel sampling as it blurs the edges and differences between nearby colors more, allowing the image to look much smoother with less jaggies. However, this doesn't necessarily mean that the texture is accurate.</p>
+		<p>There would be a large difference between the two methods when the edges to the texture are sharp and the data isn't continous as this would cause nearest pixel sampling to produce results that look blocky and pixelated.</p>
+
+		<h2>Part 6: Texture Mapping with Mipmaps</h2>
+		<p align="center">Nearest Sampling</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/zn.png" alt="Nearest/Zero" style="width:100%; padding: 0%">
+				<p1>Zero Level</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/nn.png" alt="Nearest/Nearest" style="width:100%; padding: 0%">
+				<p1>Nearest Level</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/bn.png" alt="Nearest/Bilinear" style="width:100%; padding: 0%">
+				<p1>Bilinear Level</p1>
+		  </div>
+		</div>
+		<br></br>
+		<p align="center">Bilinear Sampling</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/zb.png" alt="Bilinear/Zero" style="width:100%; padding: 0%">
+				<p1>Zero Level</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/nb.png" alt="Bilinear/Nearest" style="width:100%; padding: 0%">
+				<p1>Nearest Level</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/bb.png" alt="Bilinear/Bilinear" style="width:100%; padding: 0%">
+				<p1>Bilinear Level</p1>
+		  </div>
+		</div>
+		<p>Level sampling involves using screen information to determine the right resolution when sampling for the pixel's color value. For pixels that coorespond to further points in the texture, we can reduce the resolution to help reduce aliasing. Using this method we can choose the most suitable resolution for the pixels in our image when texture mapping.</p>
+		<p>Level Zero: Highest resolution, we sample at the zeroth level.</p>
+		<p>Nearest Level: Uses closest mipmap level as the pixel texture. We do this by rounding the level to the closest integer.</p>
+		<p>Bilinear: Uses actual mipmap level, sample the pixel twice with the nearest integer levels then interpolate the two colors depending on the difference between the values and the actual level to obtain the pixel value.</p>
+		<br></br>
 	</body>
 </html>
