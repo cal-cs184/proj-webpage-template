@@ -4,24 +4,14 @@
 	<body>
 		<h3>CS184/284A Project Webpages</h3>
 		<br><br>
-		<a href="/proj1/index.html">Project 1</a>
+		<a href="proj1/index.html">Project 1</a>
 		<br><br>
-		<a href="/proj2/index.html">Project 2</a>
+		<a href="proj2/index.html">Project 2</a>
 		<br><br>
-		<a href="/proj3-1/index.html">Project 3-1</a>
+		<a href="proj3-1/index.html">Project 3-1</a>
 		<br><br>
-		<a href="/proj3-2/index.html">Project 3-2</a>
+		<a href="proj3-2/index.html">Project 3-2</a>
 		<br><br>
-		<a href="/proj4/index.html">Project 4</a>
+		<a href="proj4/index.html">Project 4</a>
 	</body>
-	<script>
-		var links = document.body.getElementsByTagName("a")
-		var a = window.location.href.indexOf(".io")
-		var repo_name = window.location.href.substring(a+3)
-		for(var i = 0; i < links.length; i++){
-			var link = links[i]
-			var actual_name = link.href.substring(link.href.indexOf(".io")+4)
-			link.href = repo_name + actual_name
-		}
-	</script>
 </html>
