@@ -64,7 +64,10 @@
 
 <h2 align="middle">Overview</h2>
 <p>
-    YOUR RESPONSE GOES HERE
+    For this project, we have reference the lecture slides and Ed posts for code and math references. It was the hardest project
+    that we have done in 184 so far, especially part 3 where we had to implement the one bounce radiance, because we found it
+    not that easy to build a mathematical intuition and translating the intuition into code. We also spend a lot of time challenging
+    ourselves with the extra credit questions, ex. optimizing the bvh algorithm and coming up with different version of adaptive sampling.
 </p>
 <br>
 
@@ -136,8 +139,8 @@ Show images with normal shading for a few small .dae files. -->
         <figcaption>CBspheres.dae</figcaption>
       </td>
       <td>
-        <img src="images/Wrtup_1_CBbunny.png" align="middle" width="400px"/>
-        <figcaption>CBbunny.dae (not a small file rather interesting to render)</figcaption>
+        <img src="images/1_empty.png" align="middle" width="400px"/>
+        <figcaption>CBempty.dae</figcaption>
       </td>
     </tr>
     <tr align="center">
@@ -154,6 +157,27 @@ Show images with normal shading for a few small .dae files. -->
 </div>
 <br>
 
+<h3>Extra credit: use some clever arithmetic tricks in your inner loops (probably ray intersection) to speed things up</h3>
+<p>
+    We noticed that for every triangle-ray intersection test, there was a series of
+    heavy math operations. This meant even rays that were obviously not going to
+    intersect the triangle would have to perform the same amount of math as every other
+    ray to return false.<br><br>
+    To optimize this unnecessary overhead, we added a sanity check in the beginning
+    to check if the ray was facing towards or away from the triangle: check if the
+    dot product of the ray's direction vector and the vector between the origin and
+    any point on the triangle was non-negative. This works because the cosine of
+    two vectors facing between 90-270 degrees becomes negative.
+</p>
+
+<div align="middle">
+    <img src="images/triangle_check.png" width="50%"/>
+</div>
+
+<p>
+    While this didn't give us a huge speedup, we noticed it would consistently
+    save a few seconds when rendering large images like <i>wall-e.dae</i>
+</p>
 
 <h2 align="middle">Part 2: Bounding Volume Hierarchy (20 Points)</h2>
 <!-- Walk through your BVH construction algorithm. Explain the heuristic you chose for picking the splitting point.
@@ -222,6 +246,75 @@ Compare rendering times on a few scenes with moderately complex geometries with 
   Clearly, BVH acceleration has saved us tremendous amount of time.
 </p>
 <br>
+
+<h3>Extra credit: Implement the surface area heuristic for splitting in your BVH</h3>
+<p>
+    We implemented the Surface Area Heuristic (SAH) to build more efficient BVHs.
+    The idea behind SAH is to subdivide a BVH node into two nodes such that the total
+    surface area of the two child bounding boxes is minimized, reducing the probability
+    of ray-intersection tests.<br>
+    We relied on <a href="https://graphics.cg.uni-saarland.de/courses/cg1-2018/slides/Building_good_BVHs.pdf">these slides</a>
+    for our algorithm.
+    Specifically, we implemented the Binning SAH algorithm because it provided
+    a good compromise between BVH construction speed and BVH quality.
+</p>
+
+<br>
+<div align="middle">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="images/sah_before_1.png" align="middle" width="400px"/>
+        <figcaption>Without SAH</figcaption>
+      </td>
+      <td>
+        <img src="images/sah_after_1.png" align="middle" width="400px"/>
+        <figcaption>With SAH</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<p>
+    We noticed that SAH made the BVH construction process more time consuming, but
+    always out-performed the naive BVH, even more so when the scene required a
+    lot of intersection tests to render.
+</p>
+<br>
+
+<h3>Extra credit: Implement more efficient intersection routines for the BVH that replace the recursive calls with a stack and a while loop</h3>
+<p>
+    We replaced the recursive logic of BVHAccel::intersect with a while loop and
+    std::stack, but we surprisingly found that the stack image always took around
+    <b>30% more time</b> to render. We suspect that realistically most intersect tests miss the
+    node's bounding box, so the stack creation overhead in each call to <i>intersect</i>
+    outweighs any efficiency the stack has. This was an interesting example of 
+    algorithm theory vs practice.
+</p>
+<div align="middle">
+  <table style="width:100%">
+    <tr align="center">
+      <td>
+        <img src="images/intersect_recurse.png" align="middle" width="90%"/>
+        <figcaption>Intersect - recursion</figcaption>
+      </td>
+      <td>
+        <img src="images/intersect_stack.png" align="middle" width="90%"/>
+        <figcaption>Intersect - stack</figcaption>
+      </td>
+    </tr>
+  </table>
+</div>
+<br>
+
+<h3>Extra credit: Implement a more memory efficient BVH</h3>
+<p>
+    When rendering large images like <i>wall-e.dae</i>, we realized that it wasn't
+    uncommon for images to have multiple primitives in the exactly or nearly the
+    same location. To save memory in such situations, during BVH construction,
+    we checked if points in a node were further than a threshold, and if not,
+    we deleted the duplicate/near-duplicate nodes. This seemed to not affect the
+    rendered image quality, but it definitely made our BVH design more memory-efficient.
+</p>
 
 <h2 align="middle">Part 3: Direct Illumination (20 Points)</h2>
 <!-- Walk through both implementations of the direct lighting function.
@@ -619,47 +712,47 @@ Pick one scene and render it with at least 2048 samples per pixel. Show a good s
   </table>
 </div>
 <br>
+    <h3>
+        Adaptive Sampling Extra Credit
+    </h3>
+    <p>
+        For extra credit, we attempted to implement a different version of adaptive sampling based on the idea in <a href="https://dl.acm.org/doi/pdf/10.1145/127719.122735">this paper</a>
+        (D. Kirk and J. Arvo. Unbiased sampling techniques for image synthesis. Computer Graphics, 25(4):153ñ156, 1991). The idea behind this
+        algorithm is that we first extract a small set of samples as a test sample, which we compare its variance with a threshold (we set it to maxTolerance in our implementation)
+        to determine whether we need more samples or not. If the variance is below the threshold, we perform regular adaptive sampling, else, we sample a bigger
+        number of samples without doing adaptive sampling. Here is an image that demonstrates the pseudocode of this algorithm taken from the paper.
+        (It is slightly different from our implementation which was described above but nonetheless builds intuition of the logic behind out algorithm):
+    </p>
 
-<h3>
-  Adaptive Sampling Extra Credit
-</h3>
-<p>
-  For extra credit, we attempted to implement a different version of adaptive sampling based on the idea in <a href="https://dl.acm.org/doi/pdf/10.1145/127719.122735">this paper</a>
-  (D. Kirk and J. Arvo. Unbiased sampling techniques for image synthesis. Computer Graphics, 25(4):153ñ156, 1991). The idea behind this
-  algorithm is that we first extract a small set of samples as a test sample, which we compare its variance with a threshold (we set it to maxTolerance in our implementation)
-  to determine whether we need more samples or not. If the variance is below the threshold, we perform regular adaptive sampling, else, we sample a bigger
-  number of samples without doing adaptive sampling. Here is an image that demonstrates the pseudocode of this algorithm taken from the paper.
-  (It is slightly different from our implementation which was described above but nonetheless builds intuition of the logic behind out algorithm):
-</p>
+    <div align="center">
+        <table style="width=100%">
+            <tr>
+                <td align="middle">
+                    <img src="images/ec-may.png" width="480px" />
+                    <figcaption align="middle">The algorithm we implemented</figcaption>
+            </tr>
+        </table>
+    </div>
+    <p>
+        To run this implementation, replace the raytrace_pixel() function in RaytracedRenderer::raytrace_tile with raytrace_pixel_unbiased().
+        Since this algorithm is quite old, and the number of samples depends only on the variance of the illuminance, the sample rate
+        graph looks quite different from the original implementation. However, the final rendered image show no difference:
+    </p>
 
-<div align="center">
-    <table style="width=100%">
-      <tr>
-        <td align="middle">
-          <img src="images/ec-may.png" width="480px" />
-          <figcaption align="middle">The algorithm we implemented</figcaption>
-      </tr>
-    </table>
-</div>
-<p>
-  To run this implementation, replace the raytrace_pixel() function in RaytracedRenderer::raytrace_tile with raytrace_pixel_unbiased().
-  Since this algorithm is quite old, and the number of samples depends only on the variance of the illuminance, the sample rate
-  graph looks quite different from the original implementation. However, the final rendered image show no difference:
-</p>
+    <div align="middle">
+        <table style="width:100%">
+            <tr align="center">
+                <td>
+                    <img src="images/bunny_malfunctioning.png" align="middle" width="400px"/>
+                    <figcaption>Rendered image (example1.dae)</figcaption>
+                </td>
+                <td>
+                    <img src="images/bunny_malfunctioning_rate.png" align="middle" width="400px"/>
+                    <figcaption>Sample rate image (example1.dae)</figcaption>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-  <div align="middle">
-    <table style="width:100%">
-      <tr align="center">
-        <td>
-          <img src="images/bunny_malfunctioning.png" align="middle" width="400px"/>
-          <figcaption>Rendered image (example1.dae)</figcaption>
-        </td>
-        <td>
-          <img src="images/bunny_malfunctioning_rate.png" align="middle" width="400px"/>
-          <figcaption>Sample rate image (example1.dae)</figcaption>
-        </td>
-      </tr>
-    </table>
-  </div>
 </body>
 </html>
