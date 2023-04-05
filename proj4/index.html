@@ -1,7 +1,219 @@
 <html>
 	<head>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
-		Project 4 here
+		<h1>Project 2: MeshEdit</h1>
+		<h3>By Alana Li</h3>
+
+		<h2>Overview</h2>
+		<p>In this project I implemented Bezier curves and surfaces using de Casteljau subdivision. I also implemented smoothing of meshes with averaged normals, as well as loop subdivision for upsampling meshes.
+		</p>
+
+		<h2>Part 1: Bezier Curves with 1D de Casteljau Subdivision</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp0.png" style="width:100%; padding: 0%">
+				<p>Step 0</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp1.png" style="width:100%; padding: 0%">
+				<p>Step 1</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp2.png" style="width:100%; padding: 0%">
+				<p>Step 2</p>
+		  </div>
+		</div>
+		<br>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp3.png" style="width:100%; padding: 0%">
+				<p>Step 3</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp4.png" style="width:100%; padding: 0%">
+				<p>Step 4</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp5.png" style="width:100%; padding: 0%">
+				<p>Step 5</p>
+		  </div>
+		</div>
+		<br>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp6.png" style="width:100%; padding: 0%">
+				<p>Step 6</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp7.png" style="width:100%; padding: 0%">
+				<p>Final Curve</p>
+		  </div>
+		  <div class="column">
+		    <img src="Images/lerp8.png" style="width:100%; padding: 0%">
+				<p>Modified t</p>
+		  </div>
+		</div>
+		<p>Given a Bezier curve with n control points, we can apply de Casteljau's algoritm to repeatedly compute linear interpolations between the points to end up with a smooth curve. We do this by adding lines between neighboring pairs of lines between control points at position t. We then repeat the process with the calculated new lines until we end up with just one point, which becomes a point on the Bezier curve.</p>
+		<p>To do this, I used a for loop to call lerp on every pair of adjacent control points. Each new calculated point is added to the vector array and the process continues until there is only one point left.</p>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/lerp9.png" style="width:100%; padding: 0%">
+				<p>Different Control Points</p>
+		  </div>
+		</div>
+
+		<h2>Part 2: Bezier Surfaces with Serarable 1D de Casteljau</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/teapot.png" style="width:100%; padding: 0%">
+				<p>Mesh Teapot</p>
+		  </div>
+		</div>
+		<p>Bezier surfaces can be represented as a series of Bezier curves lined up. We can use de Casteljau's algorithm to calculate the control point of each curve in one dimension with our u variable, before linearly interpolating in the other direction with the input v.</p>
+		<p>This is done by evaluating the control points one row at a time in the u dimension. This determines the Bezier curves. We then evaluate the u points at t in the v direction, creating the final Bezier surface.</p>
+
+		<h2>Part 3: Area-Weighted Vertex Normals</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/notsmooth.png" style="width:100%; padding: 0%">
+				<p1>Flat Shading</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/smooth.png" style="width:100%; padding: 0%">
+				<p1>Phong Shading</p1>
+		  </div>
+		</div>
+		<p>I used a HalfedgeCIter object to keep track of the starting halfedge, looping until we eventually come back to the start. Halfedge objects have a pointer to a trianglar face with 3 vertices. By following the halfedge's next() and position pointers we can get the positions of all 3 vertices of the face. I then took the cross product of the difference between adjacent vectors and added that to the sum. I then move on to the next surface by accessing the halfedge's twin() then next() pointer. When the loop is finished, the normalized vector of the sum is returned.</p>
+
+		<h2>Part 4: Edge Flip</h2>
+		<div class="row">
+		  <div class="column">
+		    <img src="Images/flipsoff.png" style="width:100%; padding: 0%">
+				<p1>Before Flipping</p1>
+		  </div>
+		  <div class="column">
+		    <img src="Images/flips.png" style="width:100%; padding: 0%">
+				<p1>After Flipping</p1>
+		  </div>
+		</div>
+		<p>To implement this feature I labeled all the vertices and edges before and after an edge flip, as well as noted the changes in face. It was very helpful to draw a diagram and label everything before and after a flip. I assigned all the initial vertices, faces, halfedges, and edges to variables. Then I reassigned the pointers using setNeighbors to change them to the vertices, halfedges, edges, and faces after the flip.</p>
+
+		<p>I ran into some bugs that involved holes in my mesh, but I solved it by updating the faces after flipping.</p>
+
+		<h2>Part 5: Edge Split</h2>
+		<div class="row">
+			<div class="column">
+				<img src="Images/normal.png" style="width:100%; padding: 0%">
+				<p1>No Splitting</p1>
+			</div>
+			<div class="column">
+				<img src="Images/splits.png" style="width:100%; padding: 0%">
+				<p1>Splits</p1>
+			</div>
+			<div class="column">
+				<img src="Images/splitsflips.png" style="width:100%; padding: 0%">
+				<p1>Splits and Flips</p1>
+			</div>
+		</div>
+		<p>Once again I labeled the different verticies and edges before any splitting, then reassigned them after the split. This involved adding a vertex, 2 faces, 3 edges, and 6 halfedges to the mesh.</p>
+
+		<h2>Part 6: Loop Subdivision for Mesh Upsampling</h2>
+		<div class="row">
+			<div class="column">
+				<img src="Images/upsample0.png" style="width:100%; padding: 0%">
+				<p>No Upsampling</p>
+			</div>
+			<div class="column">
+				<img src="Images/upsample1.png" style="width:100%; padding: 0%">
+				<p>Upsampling x1</p>
+			</div>
+			<div class="column">
+				<img src="Images/upsample2.png" style="width:100%; padding: 0%">
+				<p>Upsampling x2</p>
+			</div>
+			<div class="column">
+				<img src="Images/upsample3.png" style="width:100%; padding: 0%">
+				<p>Upsampling x3</p>
+			</div>
+		</div>
+		<p>Loop subdivision was implemented by calculating new positions for the mesh vertices. To do this I iterated through the old vertices and updated their positions by using the weighted positions of their neighbors. I then calculated the new vertex positions by apply the formula 3/8 * (A + B) + 1/8 * (C + D). The mesh's original edges were then split and the new vertices were assigned the position calculated in the previous steps. Afterwards, all edges with one new and one old vertex were flipped, and the positions of all the vertices were updated.</p>
+
+		<p>As you can see from the cow mesh above, loop subdivision creates a smoother mesh. The sharp edges are rounded out as the positions are updated to be the weighted average of the positions of nearby vertices. As a result of this, nearby vertices that are farther apart have a much more drastic change in position compared to nearby vertices that are close together. This means that the less dense vertices are in a mesh, the more smoothing.</p>
+		<p>To reduce this effect, we can pre-split the edges so that vertices are closer together, which will reduce the amount of smoothing we get.</p>
+		<p align="center">Before Pre-Splitting:</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/sub0.png" style="width:100%; padding: 0%">
+				<p>No Upsampling</p>
+			</div>
+			<div class="column">
+				<img src="Images/sub1.png" style="width:100%; padding: 0%">
+				<p>Upsampling x1</p>
+			</div>
+			<div class="column">
+				<img src="Images/sub2.png" style="width:100%; padding: 0%">
+				<p>Upsampling x2</p>
+			</div>
+			<div class="column">
+				<img src="Images/sub3.png" style="width:100%; padding: 0%">
+				<p>Upsampling x3</p>
+			</div>
+		</div>
+		<br>
+		<p align="center">After Pre-Splitting:</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/split0.png" style="width:100%; padding: 0%">
+				<p>No Upsampling</p>
+			</div>
+			<div class="column">
+				<img src="Images/split1.png" style="width:100%; padding: 0%">
+				<p>Upsampling x1</p>
+			</div>
+			<div class="column">
+				<img src="Images/split2.png" style="width:100%; padding: 0%">
+				<p>Upsampling x2</p>
+			</div>
+			<div class="column">
+				<img src="Images/split3.png" style="width:100%; padding: 0%">
+				<p>Upsampling x3</p>
+			</div>
+		</div>
+		<br>
+		<p>Notice that the mesh after pre-splitting is also symetrical, compared to the mesh without. This is because the mesh before pre-splitting was not completely symetrical as vertices had different numbers of neighbors. This causes the cube to become asymetical as the number of neighbors of a vertex affects the change in position.</p>
+		<p align="center">Before Pre-Splitting:</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/front0.png" style="width:100%; padding: 0%">
+				<p>No Upsampling</p>
+			</div>
+			<div class="column">
+				<img src="Images/front1.png" style="width:100%; padding: 0%">
+				<p>Upsampling x1</p>
+			</div>
+		</div>
+		<br>
+		<p align="center">After Pre-Splitting:</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/fronts0.png" style="width:100%; padding: 0%">
+				<p>No Upsampling</p>
+			</div>
+			<div class="column">
+				<img src="Images/fronts1.png" style="width:100%; padding: 0%">
+				<p>Upsampling x1</p>
+			</div>
+		</div>
+		<br>
+		<p>One bug I ran into was where I forgot to store the starting value of the halfedge before iterating on it in a do while loop. This caused a very interesting and slightly creepy looking mesh after loop subdivision:</p>
+		<div class="row">
+			<div class="column">
+				<img src="Images/bug.png" style="width:100%; padding: 0%">
+				<p>Interesting Bug</p>
+			</div>
+	</div>
+		<br></br>
 	</body>
 </html>
